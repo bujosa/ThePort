@@ -1,0 +1,26 @@
+# Build output
+.build_output/
+DerivedData/
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+*.xcscmblueprint
+
+# Tuist
+Derived/
+Tuist/.build/
+
+# macOS
+.DS_Store
+*.swp
+*~
+
+# SPM
+.swiftpm/
+.build/
+
+# Distribution
+executables/
+.dmg_staging/

@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g. 1.0.0)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build and Release
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Tuist
+        run: |
+          brew tap tuist/tuist
+          brew install tuist
+          tuist version
+
+      - name: Extract version
+        id: version
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "VERSION=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate Xcode project
+        run: make generate
+
+      - name: Build Release
+        run: |
+          xcodebuild \
+            -workspace ThePort.xcworkspace \
+            -scheme ThePort-Workspace \
+            -destination 'platform=macOS' \
+            -configuration Release \
+            -derivedDataPath .build_output \
+            build
+
+      - name: Create DMG
+        run: |
+          chmod +x scripts/create-dmg.sh
+          ./scripts/create-dmg.sh ${{ steps.version.outputs.VERSION }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.VERSION }}
+          name: ThePort v${{ steps.version.outputs.VERSION }}
+          draft: false
+          generate_release_notes: true
+          files: .build_output/ThePort.dmg
