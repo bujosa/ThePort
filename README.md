@@ -40,6 +40,24 @@ Ever run `lsof -i :3000` just to find out what's hogging a port? ThePort replace
 | **Light & Dark Theme** | Follows system appearance or toggle manually |
 | **Low Resource Usage** | ~94 MB memory, 0% CPU when idle |
 
+## Performance
+
+ThePort is designed to stay out of your way. Here's what to expect:
+
+| Metric | Value |
+|--------|-------|
+| **Memory (idle)** | ~94 MB |
+| **CPU (idle)** | 0% |
+| **CPU (during refresh)** | < 1% spike for ~100ms |
+| **Refresh interval** | Every 5 seconds (configurable) |
+| **App size (DMG)** | ~5 MB |
+| **Startup time** | < 1 second |
+| **Background scanning** | `netstat` + `lsof` via `Process()` — no persistent daemons |
+| **Network usage** | None — all data comes from local system commands |
+| **Disk usage** | Minimal — only a small SQLite file for the watchlist |
+
+> ThePort spawns short-lived `netstat` and `lsof` subprocesses on each refresh cycle. Between cycles, CPU usage drops to 0%. No background daemons, no polling threads, no wake locks.
+
 ## How It Works
 
 ThePort uses two macOS system commands under the hood:
