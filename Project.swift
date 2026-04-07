@@ -27,7 +27,7 @@ let project = Project(
             infoPlist: .extendingDefault(with: [
                 "CFBundleDisplayName": "ThePort",
                 "CFBundleName": "ThePort",
-                "CFBundleShortVersionString": "1.0.0",
+                "CFBundleShortVersionString": "0.1.0",
                 "CFBundleVersion": "1",
                 "LSMinimumSystemVersion": "14.0",
                 "NSHumanReadableCopyright": "Copyright © 2024 David Bujosa. All rights reserved.",
